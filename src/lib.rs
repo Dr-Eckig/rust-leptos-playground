@@ -1,4 +1,7 @@
+mod components;
+use components::meeting_view::MeetingView;
 use leptos::*;
+use crate::components::buttons::GeneralButton;
 
 struct Meeting {
     title: String,
@@ -17,6 +20,7 @@ impl Meeting {
 #[component]
 pub fn App() -> impl IntoView {
     let counter = create_rw_signal(0);
+
     let meetings = vec![
         Meeting::new("Meeting 1", "01.01.204"),
         Meeting::new("Meeting 2", "01.01.2028"),
@@ -26,26 +30,21 @@ pub fn App() -> impl IntoView {
         let title = String::from(meeting.title);
         let date = String::from(meeting.date);
         view! {
-            <div class="message is-primary">
-                <div class="message-header">
-                    <div class="title is-5">{ title }</div>
-                    <div class="subtitle is-5">{ date }</div>
-                </div>
-                <div class="message-body">
-                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-                </div>
-            </div>
+            <MeetingView title=title date=date />
+
         }
     }).collect::<Vec<_>>();
+
+    let button_handler = move || {
+        log::info!("Button clicked");
+        counter.update(|value| *value = *value + 1);
+    };
+
     view! {
 
         <h1> Hello World! {counter}</h1>
 
-        <button class="button" on:click=move |_event| {
-            counter.update(|value| *value = *value + 1);
-            log::info!("Button clicked")
-        }
-        > Ok </button>
+        <GeneralButton on_click=button_handler />
 
         { meeting_views }
     }
